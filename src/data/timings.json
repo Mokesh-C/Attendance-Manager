@@ -1,0 +1,9 @@
+[
+  { "hour": 1, "label": "1st Hour", "start": "08:30", "end": "09:20" },
+  { "hour": 2, "label": "2nd Hour", "start": "09:20", "end": "10:10" },
+  { "hour": 3, "label": "3rd Hour", "start": "10:30", "end": "11:20" },
+  { "hour": 4, "label": "4th Hour", "start": "11:20", "end": "12:10" },
+  { "hour": 5, "label": "5th Hour", "start": "13:40", "end": "14:30" },
+  { "hour": 6, "label": "6th Hour", "start": "14:30", "end": "15:20" },
+  { "hour": 7, "label": "7th Hour", "start": "15:30", "end": "16:20" }
+]

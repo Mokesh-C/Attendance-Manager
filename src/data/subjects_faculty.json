@@ -1,0 +1,42 @@
+[
+  {
+    "subjectCode": "23MX31",
+    "subjectName": "CLOUD COMPUTING",
+    "faculty": {
+      "name": "Dr. Subathra M",
+      "email": "msa.mca@psgtech.ac.in",
+      "mobile": "919842787063",
+      "type": "General"
+    }
+  },
+  {
+    "subjectCode": "23MX36",
+    "subjectName": "CLOUD COMPUTING LABORATORY",
+    "faculty": {
+      "name": "Dr. Subathra M",
+      "email": "msa.mca@psgtech.ac.in",
+      "mobile": "919842787063",
+      "type": "General"
+    }
+  },
+  {
+    "subjectCode": "23MXCA",
+    "subjectName": "ENTREPRENEURSHIP",
+    "faculty": {
+      "name": "Dr. Suresh Kumar K",
+      "email": "hod.hum@psgtech.ac.in",
+      "mobile": "919345339308",
+      "type": "General"
+    }
+  },
+  {
+    "subjectCode": "23MXM4",
+    "subjectName": "PROFESSIONAL ETHICS",
+    "faculty": {
+      "name": "Dr. Nandha Gopal L",
+      "email": "lng.hum@psgtech.ac.in",
+      "mobile": "919994984050",
+      "type": "General"
+    }
+  }
+]
