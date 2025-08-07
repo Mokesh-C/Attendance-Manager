@@ -19,7 +19,7 @@ const MarkAttendance = () => {
   const navigate = useNavigate();
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [userRole] = useState('CR'); // Mock user role
-  const [userName] = useState('Rajesh Kumar');
+  const [userName] = useState('Class Representative');
 
   // Form state
   const [selectedSubject, setSelectedSubject] = useState('');

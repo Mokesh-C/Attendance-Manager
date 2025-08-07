@@ -41,8 +41,8 @@
     --color-destructive-foreground: #FFFFFF; /* white */
     
     /* Accent Colors */
-    --color-accent: #E67E22; /* orange-600 */
-    --color-accent-foreground: #FFFFFF; /* white */
+    --color-accent: rgba(27,54,93,0.20); /* primary color at 20% opacity */
+    --color-accent-foreground: #1B365D; /* use primary for text on accent */
     
     /* Success Colors */
     --color-success: #27AE60; /* green-600 */

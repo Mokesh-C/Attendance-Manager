@@ -39,13 +39,9 @@ const AttendanceActions = ({
         </div>
       </div>
 
-      {/* Send Type Selection */}
+      {/* Report Type Selection (was Send Type) */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-muted-foreground mb-2">Send Type</label>
-        <div className="grid grid-cols-1 gap-2">
-      {/* Report Filter Selection */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-muted-foreground mb-2">Report Filter</label>
+        <label className="block text-sm font-medium text-muted-foreground mb-2">Report Type</label>
         <div className="grid grid-cols-1 gap-2">
           <Button
             variant={reportFilter === 'present' ? 'default' : 'outline'}
@@ -73,7 +69,6 @@ const AttendanceActions = ({
           </Button>
         </div>
       </div>
-
       {/* Send Type Selection */}
       <div className="mb-4">
         <label className="block text-sm font-medium text-muted-foreground mb-2">Send Type</label>
@@ -108,8 +103,6 @@ const AttendanceActions = ({
           >
             Send to Faculty Email
           </Button>
-        </div>
-      </div>
         </div>
       </div>
 
