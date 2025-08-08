@@ -10,9 +10,17 @@ const AttendanceActions = ({
   presentCount = 0,
   totalCount = 0,
   reportFilter,
-  onReportFilterChange
+  onReportFilterChange,
+  facultyMobile
 }) => {
   const attendancePercentage = totalCount > 0 ? ((presentCount / totalCount) * 100)?.toFixed(1) : 0;
+
+  // If sendType is 'personal' but no faculty mobile, switch to 'common'
+  React.useEffect(() => {
+    if (sendType === 'personal' && !facultyMobile) {
+      onSendTypeChange('common');
+    }
+  }, [sendType, facultyMobile, onSendTypeChange]);
 
   return (
     <div className="bg-card rounded-lg border border-border p-6 shadow-academic">
@@ -44,20 +52,20 @@ const AttendanceActions = ({
         <label className="block text-sm font-medium text-muted-foreground mb-2">Report Type</label>
         <div className="grid grid-cols-1 gap-2">
           <Button
-            variant={reportFilter === 'present' ? 'default' : 'outline'}
-            onClick={() => onReportFilterChange('present')}
-            size="sm"
-            className="w-full"
-          >
-            Present Only
-          </Button>
-          <Button
             variant={reportFilter === 'absent' ? 'default' : 'outline'}
             onClick={() => onReportFilterChange('absent')}
             size="sm"
             className="w-full"
           >
             Absent Only
+          </Button>
+          <Button
+            variant={reportFilter === 'present' ? 'default' : 'outline'}
+            onClick={() => onReportFilterChange('present')}
+            size="sm"
+            className="w-full"
+          >
+            Present Only
           </Button>
           <Button
             variant={reportFilter === 'both' ? 'default' : 'outline'}
@@ -73,16 +81,18 @@ const AttendanceActions = ({
       <div className="mb-4">
         <label className="block text-sm font-medium text-muted-foreground mb-2">Send Type</label>
         <div className="grid grid-cols-1 gap-2">
-          <Button
-            variant={sendType === 'personal' ? 'default' : 'outline'}
-            onClick={() => onSendTypeChange('personal')}
-            iconName="User"
-            iconPosition="left"
-            size="sm"
-            className="w-full md:w-auto"
-          >
-            Send to Faculty WhatsApp
-          </Button>
+          {facultyMobile && (
+            <Button
+              variant={sendType === 'personal' ? 'default' : 'outline'}
+              onClick={() => onSendTypeChange('personal')}
+              iconName="User"
+              iconPosition="left"
+              size="sm"
+              className="w-full md:w-auto"
+            >
+              Send to Faculty WhatsApp
+            </Button>
+          )}
           <Button
             variant={sendType === 'common' ? 'default' : 'outline'}
             onClick={() => onSendTypeChange('common')}
@@ -118,21 +128,6 @@ const AttendanceActions = ({
       >
         Send
       </Button>
-
-      {/* Instructions */}
-      <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-        <div className="flex items-start">
-          <Icon name="Info" size={16} className="text-muted-foreground mr-2 mt-0.5" />
-          <div className="text-sm text-muted-foreground">
-            <p className="mb-1">
-              <strong>Submit Attendance:</strong> Records attendance and generates reports
-            </p>
-            <p>
-              <strong>Share Options:</strong> Send formatted reports with PSG branding via WhatsApp or Email
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

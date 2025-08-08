@@ -46,13 +46,6 @@ const MainNavigation = ({ userRole = 'CR', isCollapsed = false, onToggleCollapse
       icon: 'BookOpen',
       roles: ['CR', 'Faculty'],
       tooltip: 'Manage subjects and courses'
-    },
-    {
-      label: 'Faculty',
-      path: '/faculty-management',
-      icon: 'GraduationCap',
-      roles: ['Faculty'],
-      tooltip: 'Manage faculty members'
     }
   ];
 
@@ -116,7 +109,7 @@ const MainNavigation = ({ userRole = 'CR', isCollapsed = false, onToggleCollapse
   // Desktop Sidebar Navigation
   return (
     <nav className={`fixed left-0 top-16 bottom-0 z-40 bg-card border-r border-border shadow-academic transition-academic ${
-      isCollapsed ? 'w-16' : 'w-72'
+      isCollapsed ? 'w-25' : 'w-64'
     }`}>
       <div className="flex flex-col h-full">
         {/* Collapse Toggle */}

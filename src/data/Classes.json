@@ -1,0 +1,10 @@
+{
+  "24MXG1": {
+    "electives": ["24MXG1", "24MXG2"],
+    "general": ["24MXG1"]
+  },
+  "24MXG2": {
+    "electives": ["24MXG1", "24MXG2"], 
+    "general": ["24MXG2"]
+  }
+}

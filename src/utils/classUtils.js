@@ -1,0 +1,42 @@
+// Utility functions for dynamic class management
+import classConfig from '../data/Classes.json';
+
+export const getCurrentClassCode = () => {
+  return localStorage.getItem('psg_class_code') || '24MXG1';
+};
+
+export const getCurrentClassName = () => {
+  return localStorage.getItem('psg_class_name') || 'MCA 2024 G1';
+};
+
+export const getCurrentUserType = () => {
+  return localStorage.getItem('psg_user_type') || 'CR';
+};
+
+export const getClassConfig = (classCode) => {
+  return classConfig[classCode] || { electives: [classCode], general: [classCode] };
+};
+
+export const getStudentsForSubject = (studentsData, classCode, subjectData) => {
+  const config = getClassConfig(classCode);
+  
+  if (subjectData.faculty.type === 'General') {
+    // For General subjects, use general array
+    const generalClasses = config.general;
+    return generalClasses.flatMap(cls => studentsData[cls] || []);
+  } else if (subjectData.faculty.type === 'Elective') {
+    // For Elective subjects, use electives array
+    const electiveClasses = config.electives;
+    const allStudents = electiveClasses.flatMap(cls => studentsData[cls] || []);
+    // Filter students who have this subject
+    return allStudents.filter(student => 
+      student.subjects && student.subjects.includes(subjectData.subjectCode)
+    );
+  }
+  
+  return [];
+};
+
+export const getSafeData = (data, defaultValue = 'N/A') => {
+  return data || defaultValue;
+};

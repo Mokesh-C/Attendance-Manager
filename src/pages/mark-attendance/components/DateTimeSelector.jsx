@@ -6,8 +6,8 @@ import Icon from '../../../components/AppIcon';
 const DateTimeSelector = ({ 
   selectedDate, 
   onDateChange, 
-  selectedHour, 
-  onHourChange, 
+  selectedHours, 
+  onHoursChange, 
   hours = []
 }) => {
   const hourOptions = hours?.map(h => ({
@@ -27,6 +27,13 @@ const DateTimeSelector = ({
       month: 'long', 
       year: 'numeric' 
     });
+  };
+
+  // Handler to limit selection to at most 2 hours
+  const handleHoursChange = (newSelected) => {
+    if (newSelected.length <= 2) {
+      onHoursChange(newSelected);
+    }
   };
 
   return (
@@ -66,11 +73,12 @@ const DateTimeSelector = ({
 
         <div>
           <Select
-            label="Class Hour"
-            placeholder="Select class hour"
+            label="Class Hour (up to 2)"
+            placeholder="Select class hour(s)"
             options={hourOptions}
-            value={selectedHour}
-            onChange={onHourChange}
+            value={selectedHours}
+            onChange={handleHoursChange}
+            multiple={true}
             required
           />
         </div>

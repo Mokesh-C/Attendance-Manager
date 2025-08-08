@@ -22,7 +22,7 @@ const SubjectTable = ({ subjects }) => {
                 <td className="p-4">{subject?.code}</td>
                 <td className="p-4">{subject?.faculty?.name}</td>
                 <td className="p-4">{subject?.faculty?.email}</td>
-                <td className="p-4">{subject?.faculty?.mobile}</td>
+                <td className="p-4">{`+91 ${subject?.faculty?.mobile || 'N/A'}`}</td>
               </tr>
             ))}
           </tbody>

@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InstitutionalHeader from './components/InstitutionalHeader';
 import MobileOptimizedLayout from './components/MobileOptimizedLayout';
-
-const STATIC_CLASS_CODE = '24MXG1'; // Only this code can access main pages
+import authData from '../../data/auth.json';
 
 const LoginPage = () => {
   const [code, setCode] = useState('');
@@ -22,8 +21,14 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (code === STATIC_CLASS_CODE) {
+    const validCredentials = authData.credentials;
+    const foundCredential = validCredentials.find(cred => cred.classCode === code.toUpperCase());
+    
+    if (foundCredential) {
       localStorage.setItem('psg_class_session', 'active');
+      localStorage.setItem('psg_class_code', foundCredential.classCode);
+      localStorage.setItem('psg_class_name', foundCredential.className);
+      localStorage.setItem('psg_user_type', foundCredential.userType);
       navigate('/dashboard');
     } else {
       setError('Invalid Class Code');

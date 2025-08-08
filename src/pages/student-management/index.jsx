@@ -11,6 +11,7 @@ import SearchAndFilter from './components/SearchAndFilter';
 import Icon from '../../components/AppIcon';
 import Button from '../../components/ui/Button';
 import studentsData from '../../data/students.json';
+import { getCurrentClassCode, getCurrentClassName, getCurrentUserType, getSafeData } from '../../utils/classUtils';
 
 const StudentManagement = () => {
   const [students, setStudents] = useState([]);
@@ -24,12 +25,20 @@ const StudentManagement = () => {
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    // Load static students on mount
+    // Load students for current class on mount
+    const currentClassCode = getCurrentClassCode();
+    const classStudents = studentsData[currentClassCode] || [];
+    
+    if (classStudents.length === 0) {
+      setSuccessMessage('No students found for this class');
+    }
+    
     setStudents(
-      studentsData.map((s, idx) => ({
+      classStudents.map((s, idx) => ({
         ...s,
         id: idx + 1,
         mobile: 'N/A', // Always set mobile to N/A
+        subjects: s.subjects || ['N/A'], // Handle missing subjects
       }))
     );
     const checkMobile = () => {

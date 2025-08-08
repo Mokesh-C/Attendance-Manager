@@ -11,9 +11,10 @@ import SubjectModal from './components/SubjectModal';
 import SubjectFilters from './components/SubjectFilters';
 import SubjectStats from './components/SubjectStats';
 import subjectsData from '../../data/subjects_faculty.json';
+import { getCurrentClassCode, getCurrentClassName, getCurrentUserType, getSafeData } from '../../utils/classUtils';
 
 const SubjectManagement = () => {
-  const [userRole] = useState('CR');
+  const [userRole] = useState(getCurrentUserType());
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState('card');
@@ -31,11 +32,19 @@ const SubjectManagement = () => {
   // Mock data
   const [subjects, setSubjects] = useState([]);
   useEffect(() => {
-    setSubjects(subjectsData.map((s, idx) => ({
+    const currentClassCode = getCurrentClassCode();
+    const classSubjects = subjectsData[currentClassCode] || [];
+    
+    setSubjects(classSubjects.map((s, idx) => ({
       id: idx + 1,
-      name: s.subjectName,
-      code: s.subjectCode,
-      faculty: s.faculty
+      name: s.subjectName || 'N/A',
+      code: s.subjectCode || 'N/A',
+      faculty: {
+        name: s.faculty?.name || 'N/A',
+        email: s.faculty?.email || 'N/A',
+        mobile: s.faculty?.mobile || 'N/A',
+        type: s.faculty?.type || 'N/A'
+      }
     })));
   }, []);
 

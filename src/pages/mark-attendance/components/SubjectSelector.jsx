@@ -8,11 +8,17 @@ const SubjectSelector = ({
   onSubjectChange, 
   loading = false 
 }) => {
-  const subjectOptions = subjects?.map(subject => ({
+  const subjectOptions = subjects?.length > 0 ? subjects?.map(subject => ({
     value: subject?.subjectCode,
     label: `${subject?.subjectName} (${subject?.subjectCode})`,
-    description: `Faculty: ${subject?.faculty?.name}`
-  }));
+    description: `Faculty: ${subject?.faculty?.name || 'N/A'}`
+  })) : [
+    {
+      value: '',
+      label: 'No subjects available',
+      description: 'N/A'
+    }
+  ];
 
   const selectedSubjectData = subjects?.find(s => s?.subjectCode === selectedSubject);
 
@@ -40,13 +46,13 @@ const SubjectSelector = ({
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-muted-foreground">Subject Code:</span>
             <span className="text-sm font-mono font-medium text-foreground">
-              {selectedSubjectData?.subjectCode}
+              {selectedSubjectData?.subjectCode || 'N/A'}
             </span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-muted-foreground">Faculty:</span>
             <span className="text-sm font-medium text-foreground">
-              {selectedSubjectData?.faculty?.name}
+              {selectedSubjectData?.faculty?.name || 'N/A'}
             </span>
           </div>
         </div>

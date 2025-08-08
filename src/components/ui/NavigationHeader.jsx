@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Icon from '../AppIcon';
 import Button from './Button';
+import { getCurrentClassName, getCurrentUserType } from '../../utils/classUtils';
 
-const NavigationHeader = ({ userRole = 'CR', userName = 'John Doe', onLogout }) => {
+const NavigationHeader = ({ userRole = getCurrentUserType(), userName = getCurrentClassName(), onLogout }) => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
