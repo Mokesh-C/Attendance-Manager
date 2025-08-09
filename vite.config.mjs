@@ -23,7 +23,7 @@ export default defineConfig({
                 name: 'PSG RepBuddy',
                 short_name: 'Attendance',
                 description: 'Offline-ready attendance management app for PSG',
-                theme_color: '#2563eb',
+                theme_color: '#2a4365',
                 icons: [
                     {
                         src: 'pwa-192x192.png',

@@ -4,10 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import InstitutionalHeader from './components/InstitutionalHeader';
 import MobileOptimizedLayout from './components/MobileOptimizedLayout';
 import authData from '../../data/auth.json';
+import Icon from '../../components/AppIcon';
 
 const LoginPage = () => {
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [installVisible, setInstallVisible] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,27 +19,59 @@ const LoginPage = () => {
     if (session === 'active') {
       navigate('/dashboard');
     }
-  document.title = 'Class Code Login - PSG RepBuddy';
+    document.title = 'Class Code Login - PSG RepBuddy';
+
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setInstallVisible(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, [navigate]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validCredentials = authData.credentials;
-    const foundCredential = validCredentials.find(cred => cred.classCode === code.toUpperCase());
-    
-    if (foundCredential) {
-      localStorage.setItem('psg_class_session', 'active');
-      localStorage.setItem('psg_class_code', foundCredential.classCode);
-      localStorage.setItem('psg_class_name', foundCredential.className);
-      localStorage.setItem('psg_user_type', foundCredential.userType);
-      navigate('/dashboard');
-    } else {
-      setError('Invalid Class Code');
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted install');
+        } else {
+          console.log('User dismissed install');
+        }
+        setDeferredPrompt(null);
+        setInstallVisible(false);
+      });
     }
   };
 
+  const installButton = installVisible ? (
+    <div style={{ position: 'fixed', top: 20, right: 20, zIndex: 1000 }}>
+      <button
+        onClick={handleInstallClick}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '10px 20px',
+          background: '#2a4365',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '8px',
+          fontWeight: 'bold',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+          cursor: 'pointer'
+        }}
+      >
+        <Icon name="Download" size={20} color="#fff" />
+        Install App
+      </button>
+    </div>
+  ) : null;
+
   return (
     <MobileOptimizedLayout>
+      {installButton}
       <div className="space-y-8 flex flex-col items-center justify-center ">
         <InstitutionalHeader />
         <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto space-y-6">
