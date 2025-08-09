@@ -66,7 +66,7 @@ const LoginPage = () => {
       <div className="space-y-8 flex flex-col items-center justify-center " style={{ position: 'relative' }}>
         {/* Install App Button - Top Right */}
         {installVisible && (
-          <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 1000 }}>
+          <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}>
             <button
               onClick={handleInstallClick}
               style={{
@@ -74,7 +74,7 @@ const LoginPage = () => {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '10px 18px',
-                background: '#2563eb',
+                background: '#2a4365',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
