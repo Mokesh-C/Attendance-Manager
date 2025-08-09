@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import InstitutionalHeader from './components/InstitutionalHeader';
 import MobileOptimizedLayout from './components/MobileOptimizedLayout';
-import Icon from '../../components/AppIcon';
 import authData from '../../data/auth.json';
+import Icon from '../../components/AppIcon';
 
 const LoginPage = () => {
   const [code, setCode] = useState('');
@@ -19,7 +19,7 @@ const LoginPage = () => {
     if (session === 'active') {
       navigate('/dashboard');
     }
-    document.title = 'PSG RepBuddy Login';
+    document.title = 'Class Code Login - PSG RepBuddy';
 
     // Install prompt logic
     const handler = (e) => {
@@ -66,7 +66,7 @@ const LoginPage = () => {
       <div className="space-y-8 flex flex-col items-center justify-center " style={{ position: 'relative' }}>
         {/* Install App Button - Top Right */}
         {installVisible && (
-          <div style={{ position: 'absolute', top: 24, right: 24, zIndex: 1000 }}>
+          <div style={{ position: 'absolute', top: 20, right: 20, zIndex: 1000 }}>
             <button
               onClick={handleInstallClick}
               style={{
@@ -74,7 +74,7 @@ const LoginPage = () => {
                 alignItems: 'center',
                 gap: '8px',
                 padding: '10px 18px',
-                background: '#2a4365',
+                background: '#2563eb',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '8px',
@@ -83,7 +83,7 @@ const LoginPage = () => {
                 cursor: 'pointer'
               }}
             >
-              <Icon name="Download" size={20} />
+              <Icon name="Download" size={20} color="#fff" />
               Install App
             </button>
           </div>
