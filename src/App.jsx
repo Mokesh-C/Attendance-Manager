@@ -33,11 +33,11 @@ function App() {
   return (
     <>
       {installVisible && (
-        <div style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 1000 }}>
+        <div style={{ position: 'fixed', bottom: 18, right: 18, zIndex: 1000 }}>
           <button
             onClick={handleInstallClick}
             style={{
-              padding: '12px 24px',
+              padding: '10px 18px',
               background: '#2563eb',
               color: '#fff',
               border: 'none',
