@@ -12,7 +12,7 @@ const BulkActions = ({ selectedCount, onBulkDelete, onClearSelection }) => {
   if (selectedCount === 0) return null;
 
   return (
-    <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-4 mb-6">
+    <div className="bg-secondary/10 border border-secondary/20 rounded-lg p-4 mb-6 shadow-academic hover:shadow-academic-md transition-all duration-200">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="flex items-center justify-center w-8 h-8 bg-secondary rounded-full">
@@ -35,6 +35,7 @@ const BulkActions = ({ selectedCount, onBulkDelete, onClearSelection }) => {
             onClick={onClearSelection}
             iconName="X"
             iconPosition="left"
+            className="transition-all duration-200 hover:bg-secondary/10"
           >
             Clear
           </Button>
@@ -44,6 +45,7 @@ const BulkActions = ({ selectedCount, onBulkDelete, onClearSelection }) => {
             onClick={handleBulkDelete}
             iconName="Trash2"
             iconPosition="left"
+            className="transition-all duration-200 hover:bg-destructive/20"
           >
             Delete Selected
           </Button>

@@ -10,11 +10,12 @@ import SubjectTable from './components/SubjectTable';
 import SubjectModal from './components/SubjectModal';
 import SubjectFilters from './components/SubjectFilters';
 import SubjectStats from './components/SubjectStats';
-import subjectsData from '../../data/subjects_faculty.json';
-import { getCurrentClassCode, getCurrentClassName, getCurrentUserType, getSafeData } from '../../utils/classUtils';
+import subjectsData from '../../data/subjects.json';
+import { getCurrentClassCode } from '../../utils/classUtils';
 
 const SubjectManagement = () => {
-  const [userRole] = useState(getCurrentUserType());
+  const [userRole, setUserRole] = useState('');
+  const [userName, setUserName] = useState('');
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [viewMode, setViewMode] = useState('card');
@@ -31,21 +32,24 @@ const SubjectManagement = () => {
 
   // Mock data
   const [subjects, setSubjects] = useState([]);
+  
+  // Load user role from localStorage
+  useEffect(() => {
+    const userType = localStorage.getItem('psg_user_type');
+    const className = localStorage.getItem('psg_class_name');
+    const roleCode = userType === 'Class Representative' ? 'CR' : userType;
+    setUserRole(roleCode || 'CR');
+    setUserName(className || 'N/A');
+  }, []);
+  
   useEffect(() => {
     const currentClassCode = getCurrentClassCode();
-    const classSubjects = subjectsData[currentClassCode] || [];
-    
-    setSubjects(classSubjects.map((s, idx) => ({
+    setSubjects(subjectsData[currentClassCode]?.map((s, idx) => ({
       id: idx + 1,
-      name: s.subjectName || 'N/A',
-      code: s.subjectCode || 'N/A',
-      faculty: {
-        name: s.faculty?.name || 'N/A',
-        email: s.faculty?.email || 'N/A',
-        mobile: s.faculty?.mobile || 'N/A',
-        type: s.faculty?.type || 'N/A'
-      }
-    })));
+      name: s.subjectName,
+      code: s.subjectCode,
+      faculty: { email: s.facultyEmail, name: 'N/A' }
+    })) || []);
   }, []);
 
   const facultyList = [
@@ -169,11 +173,11 @@ const SubjectManagement = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <NavigationHeader userRole={userRole} userName="Class Representative" />
+      <NavigationHeader userRole={userRole} userName={userName} />
       {!isMobile && (
         <MainNavigation userRole={userRole} isCollapsed={isNavCollapsed} onToggleCollapse={() => setIsNavCollapsed(!isNavCollapsed)} />
       )}
-      <main className={`pt-16 pb-20 lg:pb-8 ${!isMobile ? (isNavCollapsed ? 'lg:ml-16' : 'lg:ml-72') : ''}`}>
+      <main className={`pt-16 pb-20 lg:pb-8 ${!isMobile ? (isNavCollapsed ? 'lg:pl-25' : 'lg:pl-64') : ''}`}>
         <div className="p-4 lg:p-6">
           <BreadcrumbTrail />
           <div className="mb-6">

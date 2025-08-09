@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import subjectsFaculty from '../../data/subjects_faculty.json';
+import React, { useState, useEffect, useMemo } from 'react';
+import subjectsData from '../../data/subjects.json';
+import facultyData from '../../data/faculty.json';
 import timings from '../../data/timings.json';
 import studentsData from '../../data/students.json';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentClassCode, getStudentsForSubject, getSafeData } from '../../utils/classUtils';
+import { getCurrentClassCode, getStudentsForSubject, getSafeData, getSubjectWithFaculty } from '../../utils/classUtils';
 import NavigationHeader from '../../components/ui/NavigationHeader';
 import MainNavigation from '../../components/ui/MainNavigation';
 import QuickActionFAB from '../../components/ui/QuickActionFAB';
@@ -19,18 +20,32 @@ import Icon from '../../components/AppIcon';
 const MarkAttendance = () => {
   const navigate = useNavigate();
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
-  const [userRole] = useState('CR'); // Mock user role
-  const [userName] = useState('Class Representative');
+  const [userRole, setUserRole] = useState('');
+  const [userName, setUserName] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Load user data from localStorage
+  useEffect(() => {
+    try {
+      const userType = localStorage.getItem('psg_user_type');
+      const className = localStorage.getItem('psg_class_name');
+      const roleCode = userType === 'Class Representative' ? 'CR' : userType;
+      setUserRole(roleCode || 'CR');
+      setUserName(className || 'N/A');
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Error loading user data:', err);
+      setError('Failed to load user data');
+      setIsLoading(false);
+    }
+  }, []);
 
   // Check authentication
   useEffect(() => {
     const session = localStorage.getItem('psg_class_session');
-    console.log('Session check:', session);
     if (session !== 'active') {
-      console.log('Redirecting to login');
       navigate('/login-register');
-    } else {
-      console.log('Session is active, staying on page');
     }
   }, [navigate]);
 
@@ -44,49 +59,83 @@ const MarkAttendance = () => {
   const [sendType, setSendType] = useState('common'); // Default to common, will be updated based on faculty mobile
   const [reportFilter, setReportFilter] = useState('both');
 
-  // Get current class code
+  // Get current class code and data
   const currentClassCode = getCurrentClassCode();
   
-  // Debug logging
-  console.log('Current Class Code:', currentClassCode);
-  console.log('Available subjects:', subjectsFaculty[currentClassCode]);
+  // Safely load subjects data
+  const subjects = useMemo(() => {
+    try {
+      return (subjectsData[currentClassCode] || [])
+        .map(subject => getSubjectWithFaculty(subject, facultyData))
+        .sort((a, b) => a.subjectName.localeCompare(b.subjectName));
+    } catch (err) {
+      console.error('Error loading subjects data:', err);
+      return [];
+    }
+  }, [currentClassCode, subjectsData, facultyData]);
   
-  // Subjects from static JSON - using current class section
-  const subjects = (subjectsFaculty[currentClassCode] || []).sort((a, b) => 
-    a.subjectName.localeCompare(b.subjectName)
-  );
-  // Timings from static JSON
-  const hours = timings;
-  // Students will be filtered based on subject type and class config
-  const allStudents = studentsData;
+  // Safely load other data
+  const hours = useMemo(() => {
+    try {
+      return timings || [];
+    } catch (err) {
+      console.error('Error loading timings data:', err);
+      return [];
+    }
+  }, [timings]);
+  
+  const allStudents = useMemo(() => {
+    try {
+      return studentsData || {};
+    } catch (err) {
+      console.error('Error loading students data:', err);
+      return {};
+    }
+  }, [studentsData]);
   
   // Show message if no subjects available for current class
-  const noSubjectsMessage = subjects.length === 0 ? 'No subjects available for this class' : null;
-  
-  // Debug logging
-  console.log('Subjects for current class:', subjects);
-  console.log('No subjects message:', noSubjectsMessage);
+  const noSubjectsMessage = (subjects?.length === 0) ? 'No subjects available for this class' : null;
 
-  // Get selected subject data
-  const selectedSubjectData = subjects?.find(s => s?.subjectCode === selectedSubject);
+  // Get selected subject data with faculty information
+  const selectedSubjectData = useMemo(() => {
+    try {
+      return subjects?.find(s => s?.subjectCode === selectedSubject) || null;
+    } catch (err) {
+      console.error('Error processing selected subject:', err);
+      return null;
+    }
+  }, [subjects, selectedSubject]);
   
   // Filter students based on subject type using class config
-  const currentStudents = selectedSubjectData ? 
-    getStudentsForSubject(allStudents, currentClassCode, selectedSubjectData) : [];
+  const currentStudents = useMemo(() => {
+    try {
+      return selectedSubjectData ? 
+        getStudentsForSubject(allStudents, currentClassCode, selectedSubjectData) : [];
+    } catch (err) {
+      console.error('Error filtering students:', err);
+      return [];
+    }
+  }, [allStudents, currentClassCode, selectedSubjectData]);
 
   // Initialize all students as present and set default send type
   useEffect(() => {
-    if (selectedSubjectData) {
-      const filteredStudents = getStudentsForSubject(allStudents, currentClassCode, selectedSubjectData);
-      setPresentStudents(filteredStudents?.map(s => s?.rollNumber)); // All present by default
-      
-      // Set default send type based on faculty mobile availability
-      if (selectedSubjectData?.faculty?.mobile) {
-        setSendType('personal');
+    try {
+      if (selectedSubjectData) {
+        const filteredStudents = getStudentsForSubject(allStudents, currentClassCode, selectedSubjectData);
+        setPresentStudents(filteredStudents?.map(s => s?.rollNumber) || []); // All present by default
+        
+        // Set default send type based on faculty mobile availability
+        if (selectedSubjectData?.faculty?.mobile) {
+          setSendType('personal');
+        } else {
+          setSendType('common');
+        }
       } else {
+        setPresentStudents([]);
         setSendType('common');
       }
-    } else {
+    } catch (err) {
+      console.error('Error in student initialization useEffect:', err);
       setPresentStudents([]);
       setSendType('common');
     }
@@ -218,6 +267,37 @@ const MarkAttendance = () => {
     navigate('/login-register');
   };
 
+  // Early return for loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading attendance page...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Early return for error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center p-8 max-w-md">
+          <Icon name="AlertTriangle" size={48} className="text-destructive mx-auto mb-4" />
+          <h1 className="text-xl font-heading font-semibold text-foreground mb-2">Error Loading Page</h1>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <NavigationHeader 
@@ -232,7 +312,7 @@ const MarkAttendance = () => {
       />
       <QuickActionFAB userRole={userRole} />
       <main className={`pt-16 pb-20 lg:pb-8 transition-academic ${
-        isNavCollapsed ? 'lg:pl-16' : 'lg:pl-72'
+        isNavCollapsed ? 'lg:pl-25' : 'lg:pl-64'
       }`}>
         <div className="p-4 lg:p-6 max-w-7xl mx-auto">
           <BreadcrumbTrail />
@@ -249,15 +329,7 @@ const MarkAttendance = () => {
             </p>
           </div>
           
-          {/* Debug Info */}
-          <div className="bg-yellow-100 border border-yellow-300 rounded-lg p-4 mb-6">
-            <h3 className="font-semibold text-yellow-800 mb-2">Debug Info:</h3>
-            <p className="text-sm text-yellow-700">Current Class Code: {currentClassCode}</p>
-            <p className="text-sm text-yellow-700">Subjects Count: {subjects.length}</p>
-            <p className="text-sm text-yellow-700">Available Subjects: {JSON.stringify(subjects.map(s => s.subjectName))}</p>
-            <p className="text-sm text-yellow-700">No Subjects Message: {noSubjectsMessage}</p>
-            <p className="text-sm text-yellow-700">Page is rendering: YES</p>
-          </div>
+
 
           {noSubjectsMessage ? (
             <div className="bg-card rounded-lg border border-border p-8 shadow-academic text-center">

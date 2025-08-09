@@ -1,0 +1,126 @@
+{
+  "24MXG1": [
+    {
+      "subjectCode": "23MX31",
+      "subjectName": "CLOUD COMPUTING",
+      "facultyEmail": "msa.mca@psgtech.ac.in",
+      "type": "General"
+    },
+    {
+      "subjectCode": "23MX36",
+      "subjectName": "CLOUD COMPUTING LABORATORY",
+      "facultyEmail": "msa.mca@psgtech.ac.in",
+      "type": "General"
+    },
+    {
+      "subjectCode": "23MXCA",
+      "subjectName": "ENTREPRENEURSHIP",
+      "facultyEmail": "hod.hum@psgtech.ac.in",
+      "type": "General"
+    },
+    {
+      "subjectCode": "23MXM4",
+      "subjectName": "PROFESSIONAL ETHICS",
+      "facultyEmail": "lng.hum@psgtech.ac.in",
+      "type": "General"
+    },
+    {
+      "subjectCode": "23MXAE",
+      "subjectName": "COMPUTER NETWORKS",
+      "facultyEmail": "akk.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAT",
+      "subjectName": "DEVOPS",
+      "facultyEmail": "vrm.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAH",
+      "subjectName": "MACHINE LEARNING",
+      "facultyEmail": "vur.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAU",
+      "subjectName": "SOFTWARE TESTING",
+      "facultyEmail": "dras.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAF",
+      "subjectName": "DATA MINING AND ANALYTICS",
+      "facultyEmail": "kgi.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAA",
+      "subjectName": "DESIGN PATTERN",
+      "facultyEmail": "dras.mca@psgtech.ac.in",
+      "type": "Elective"
+    }
+  ],
+  "24MXG2": [
+    {
+      "subjectCode": "23MX31",
+      "subjectName": "CLOUD COMPUTING",
+      "facultyEmail": "msa.mca@psgtech.ac.in",
+      "type": "General"
+    },
+    {
+      "subjectCode": "23MX36",
+      "subjectName": "CLOUD COMPUTING LABORATORY",
+      "facultyEmail": "msa.mca@psgtech.ac.in",
+      "type": "General"
+    },
+    {
+      "subjectCode": "23MXCA",
+      "subjectName": "ENTREPRENEURSHIP",
+      "facultyEmail": "hod.hum@psgtech.ac.in",
+      "type": "General"
+    },
+    {
+      "subjectCode": "23MXM4",
+      "subjectName": "PROFESSIONAL ETHICS",
+      "facultyEmail": "lng.hum@psgtech.ac.in",
+      "type": "General"
+    },
+    {
+      "subjectCode": "23MXAE",
+      "subjectName": "COMPUTER NETWORKS",
+      "facultyEmail": "akk.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAT",
+      "subjectName": "DEVOPS",
+      "facultyEmail": "vrm.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAH",
+      "subjectName": "MACHINE LEARNING",
+      "facultyEmail": "vur.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAU",
+      "subjectName": "SOFTWARE TESTING",
+      "facultyEmail": "dras.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAF",
+      "subjectName": "DATA MINING AND ANALYTICS",
+      "facultyEmail": "kgi.mca@psgtech.ac.in",
+      "type": "Elective"
+    },
+    {
+      "subjectCode": "23MXAA",
+      "subjectName": "DESIGN PATTERN",
+      "facultyEmail": "dras.mca@psgtech.ac.in",
+      "type": "Elective"
+    }
+  ]
+}

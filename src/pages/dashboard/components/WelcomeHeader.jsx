@@ -9,9 +9,8 @@ const WelcomeHeader = ({ userName, userRole, currentTime }) => {
     return 'Good Evening';
   };
 
-  // Always show generic class rep name
-  const displayName = 'Class Representative';
-  const getRoleDisplay = () => 'Class Representative';
+  // Use the actual userName passed from parent
+  const displayName = userName || 'Class Representative';
 
   const formatDate = () => {
     const options = { 
@@ -35,11 +34,19 @@ const WelcomeHeader = ({ userName, userRole, currentTime }) => {
           </div>
           
           <h1 className="text-2xl lg:text-3xl font-heading font-bold mb-2">
-            Welcome back, {displayName}!
+            Welcome back, Class Representative!
           </h1>
           
           <p className="text-primary-foreground/90 mb-4">
-            • PSG College of Technology
+            {userName && userName !== 'N/A' ? (
+              <span className="flex items-center space-x-2">
+                <span>{userName}</span>
+                <span>•</span>
+                <span>PSG College of Technology</span>
+              </span>
+            ) : (
+              <span>• PSG College of Technology</span>
+            )}
           </p>
           
           <div className="flex items-center space-x-4 text-sm text-primary-foreground/80">

@@ -17,14 +17,36 @@ export const getClassConfig = (classCode) => {
   return classConfig[classCode] || { electives: [classCode], general: [classCode] };
 };
 
+// New function to get faculty by email
+export const getFacultyByEmail = (facultyEmail, facultyData) => {
+  if (!facultyData || !facultyData.faculty) return null;
+  return facultyData.faculty.find(f => f.email === facultyEmail) || null;
+};
+
+// New function to get subject with complete faculty info
+export const getSubjectWithFaculty = (subject, facultyData) => {
+  if (!subject || !subject.facultyEmail) {
+    return {
+      ...subject,
+      faculty: { name: 'N/A', email: 'N/A', mobile: 'N/A', department: 'N/A', designation: 'N/A' }
+    };
+  }
+  
+  const faculty = getFacultyByEmail(subject.facultyEmail, facultyData);
+  return {
+    ...subject,
+    faculty: faculty || { name: 'N/A', email: 'N/A', mobile: 'N/A', department: 'N/A', designation: 'N/A' }
+  };
+};
+
 export const getStudentsForSubject = (studentsData, classCode, subjectData) => {
   const config = getClassConfig(classCode);
   
-  if (subjectData.faculty.type === 'General') {
+  if (subjectData.type === 'General') {
     // For General subjects, use general array
     const generalClasses = config.general;
     return generalClasses.flatMap(cls => studentsData[cls] || []);
-  } else if (subjectData.faculty.type === 'Elective') {
+  } else if (subjectData.type === 'Elective') {
     // For Elective subjects, use electives array
     const electiveClasses = config.electives;
     const allStudents = electiveClasses.flatMap(cls => studentsData[cls] || []);

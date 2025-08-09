@@ -22,7 +22,7 @@ const StudentAttendanceList = ({
           No Students Found
         </h3>
         <p className="text-muted-foreground">
-          {selectedSubject ? 'No students enrolled for this subject.' : 'Please select a subject to view enrolled students.'}
+          Please select a subject to view enrolled students.
         </p>
       </div>
     );

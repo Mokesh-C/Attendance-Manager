@@ -5,29 +5,37 @@ import QuickActionFAB from '../../components/ui/QuickActionFAB';
 import BreadcrumbTrail from '../../components/ui/BreadcrumbTrail';
 import StudentCard from './components/StudentCard';
 import StudentTable from './components/StudentTable';
-import StudentModal from './components/StudentModal';
-import BulkActions from './components/BulkActions';
 import SearchAndFilter from './components/SearchAndFilter';
 import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
 import studentsData from '../../data/students.json';
 import { getCurrentClassCode, getCurrentClassName, getCurrentUserType, getSafeData } from '../../utils/classUtils';
 
 const StudentManagement = () => {
   const [students, setStudents] = useState([]);
+  const [userRole, setUserRole] = useState('');
+  const [userName, setUserName] = useState('');
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedStudents, setSelectedStudents] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(null);
+
   const [isLoading, setIsLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Load user data from localStorage
+  useEffect(() => {
+    const userType = localStorage.getItem('psg_user_type');
+    const className = localStorage.getItem('psg_class_name');
+    const roleCode = userType === 'Class Representative' ? 'CR' : userType;
+    setUserRole(roleCode || 'CR');
+    setUserName(className || 'N/A');
+  }, []);
 
   useEffect(() => {
     // Load students for current class on mount
     const currentClassCode = getCurrentClassCode();
     const classStudents = studentsData[currentClassCode] || [];
+    
+
     
     if (classStudents.length === 0) {
       setSuccessMessage('No students found for this class');
@@ -37,81 +45,47 @@ const StudentManagement = () => {
       classStudents.map((s, idx) => ({
         ...s,
         id: idx + 1,
-        mobile: 'N/A', // Always set mobile to N/A
+        mobile: s.mobile || 'N/A', // Use actual mobile if available, otherwise N/A
         subjects: s.subjects || ['N/A'], // Handle missing subjects
+        classSection: getCurrentClassName(), // Add class section info
       }))
     );
+    setIsLoading(false);
+    
     const checkMobile = () => {
-      // Logic to determine if the view is mobile or not
+      setIsMobile(window.innerWidth < 768);
     };
 
-    setIsMobile(false); // Default to desktop for now
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const filteredStudents = useMemo(() => {
     return students.filter(student => {
-      const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const searchLower = searchQuery.toLowerCase();
+      const matchesSearch = 
+        student.name?.toLowerCase().includes(searchLower) ||
+        student.rollNumber?.toLowerCase().includes(searchLower) ||
+        student.email?.toLowerCase().includes(searchLower);
       return matchesSearch;
     });
   }, [students, searchQuery]);
 
-  const handleAddStudent = () => {
-    setIsModalOpen(true);
-  };
 
-  const handleEditStudent = (student) => {
-    setEditingStudent(student);
-    setIsModalOpen(true);
-  };
-
-  const handleDeleteStudent = (studentId) => {
-    // Logic to delete a student
-  };
-
-  const handleBulkDelete = () => {
-    // Logic to delete selected students
-  };
-
-  const handleSelectStudent = (studentId) => {
-    setSelectedStudents(prevSelected => {
-      if (prevSelected.includes(studentId)) {
-        return prevSelected.filter(id => id !== studentId);
-      } else {
-        return [...prevSelected, studentId];
-      }
-    });
-  };
-
-  const handleSelectAll = () => {
-    if (selectedStudents.length === filteredStudents.length) {
-      setSelectedStudents([]);
-    } else {
-      setSelectedStudents(filteredStudents.map(student => student.id));
-    }
-  };
-
-  const handleClearSelection = () => {
-    setSelectedStudents([]);
-  };
-
-  const handleSaveStudent = (student) => {
-    // Logic to save a student (add or edit)
-    setIsModalOpen(false);
-    setEditingStudent(null);
-    setSuccessMessage('Student saved successfully');
-  };
 
   return (
     <div className="min-h-screen bg-background">
-      <NavigationHeader userRole="CR" userName="Class Representative" />
+      <NavigationHeader userRole={userRole} userName={userName} />
       {!isMobile && (
         <MainNavigation 
-          userRole="CR" 
+          userRole={userRole} 
           isCollapsed={isNavCollapsed}
           onToggleCollapse={() => setIsNavCollapsed(!isNavCollapsed)}
         />
       )}
-      <main className={`pt-16 pb-20 lg:pb-8 ${!isMobile ? (isNavCollapsed ? 'lg:ml-16' : 'lg:ml-72') : ''}`}>
+      <main className={`pt-16 pb-20 lg:pb-8 ${!isMobile ? (isNavCollapsed ? 'lg:pl-25' : 'lg:pl-64') : ''}`}>
         <div className="p-4 lg:p-6">
           <BreadcrumbTrail />
           <div className="mb-6">
@@ -119,7 +93,7 @@ const StudentManagement = () => {
             <p className="text-muted-foreground">Below are the students for your class.</p>
           </div>
           {successMessage && (
-            <div className="bg-success/10 border border-success/20 rounded-lg p-4 mb-6">
+            <div className="bg-success/10 border border-success/20 rounded-lg p-4 mb-6 shadow-academic animate-in slide-in-from-top-2 duration-300">
               <div className="flex items-center space-x-3">
                 <Icon name="CheckCircle" size={20} className="text-success" />
                 <p className="text-success font-medium">{successMessage}</p>
@@ -129,27 +103,24 @@ const StudentManagement = () => {
           <SearchAndFilter
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
-            onAddStudent={handleAddStudent}
             totalStudents={students?.length}
             filteredCount={filteredStudents?.length}
           />
-          <BulkActions
-            selectedCount={selectedStudents?.length}
-            onBulkDelete={handleBulkDelete}
-            onClearSelection={handleClearSelection}
-          />
-          {isMobile ? (
+          {isLoading ? (
+            <div className="text-center py-12 animate-in fade-in duration-500">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground font-medium">Loading students...</p>
+            </div>
+          ) : isMobile ? (
             <div className="space-y-4">
               {filteredStudents?.map(student => (
                 <StudentCard
                   key={student?.id}
                   student={student}
-                  onEdit={handleEditStudent}
-                  onDelete={handleDeleteStudent}
                 />
               ))}
               {filteredStudents?.length === 0 && (
-                <div className="text-center py-12">
+                <div className="text-center py-12 animate-in fade-in duration-500">
                   <Icon name="Users" size={48} className="text-muted-foreground mx-auto mb-4" />
                   <p className="text-muted-foreground font-medium">No students found</p>
                   <p className="text-sm text-muted-foreground mt-1">
@@ -164,25 +135,11 @@ const StudentManagement = () => {
                 ...student,
                 mobile: student.mobile || 'N/A',
               }))}
-              columns={["name", "rollNumber", "email", "mobile"]} // Only show these columns
-              selectedStudents={selectedStudents}
-              onSelectStudent={handleSelectStudent}
-              onSelectAll={handleSelectAll}
-              onEdit={handleEditStudent}
-              onDelete={handleDeleteStudent}
             />
           )}
         </div>
       </main>
-      <StudentModal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setEditingStudent(null);
-        }}
-        student={editingStudent}
-        onSave={handleSaveStudent}
-      />
+
       <QuickActionFAB userRole="CR" />
     </div>
   );

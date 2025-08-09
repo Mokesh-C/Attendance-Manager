@@ -1,0 +1,60 @@
+{
+  "faculty": [
+    {
+      "email": "msa.mca@psgtech.ac.in",
+      "name": "Dr. Subathra M",
+      "mobile": "9842787063",
+      "department": "MCA",
+      "designation": "Assistant Professor"
+    },
+    {
+      "email": "hod.hum@psgtech.ac.in",
+      "name": "Dr. Suresh Kumar K",
+      "mobile": "",
+      "department": "Humanities",
+      "designation": "HOD"
+    },
+    {
+      "email": "lng.hum@psgtech.ac.in",
+      "name": "Dr. Nandha Gopal L",
+      "mobile": "9994984050",
+      "department": "Humanities",
+      "designation": "Assistant Professor"
+    },
+    {
+      "email": "akk.mca@psgtech.ac.in",
+      "name": "Mrs. Kalyani A",
+      "mobile": "9944473831",
+      "department": "MCA",
+      "designation": "Assistant Professor"
+    },
+    {
+      "email": "vrm.mca@psgtech.ac.in",
+      "name": "Dr. Manavalan R",
+      "mobile": "",
+      "department": "MCA",
+      "designation": "Associate Professor"
+    },
+    {
+      "email": "vur.mca@psgtech.ac.in",
+      "name": "Dr. Umarani V",
+      "mobile": "9894795740",
+      "department": "MCA",
+      "designation": "Associate Professor"
+    },
+    {
+      "email": "dras.mca@psgtech.ac.in",
+      "name": "Dr. Sankar A",
+      "mobile": "",
+      "department": "MCA",
+      "designation": "Associate Professor"
+    },
+    {
+      "email": "kgi.mca@psgtech.ac.in",
+      "name": "Mrs. Gayathri K",
+      "mobile": "9944946549",
+      "department": "MCA",
+      "designation": "Assistant Professor"
+    }
+  ]
+}

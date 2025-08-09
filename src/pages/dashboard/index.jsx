@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import studentsData from '../../data/students.json';
-import subjectsFaculty from '../../data/subjects_faculty.json';
+import subjectsData from '../../data/subjects.json';
 import { useNavigate } from 'react-router-dom';
 import NavigationHeader from '../../components/ui/NavigationHeader';
 import MainNavigation from '../../components/ui/MainNavigation';
@@ -11,12 +11,14 @@ import QuickActionCard from './components/QuickActionCard';
 import SummaryWidget from './components/SummaryWidget';
 import ActivityFeed from './components/ActivityFeed';
 import UpcomingSchedule from './components/UpcomingSchedule';
+import { getCurrentClassCode } from '../../utils/classUtils';
 
 const Dashboard = () => {
-  const [userRole, setUserRole] = useState('Class Representative');
-  const [userName, setUserName] = useState('Class Representative');
+  const [userRole, setUserRole] = useState('');
+  const [userName, setUserName] = useState('');
   const [isNavCollapsed, setIsNavCollapsed] = useState(false);
   const [currentTime, setCurrentTime] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,6 +26,16 @@ const Dashboard = () => {
     const session = localStorage.getItem('psg_class_session');
     if (session !== 'active') {
       navigate('/login-register');
+    } else {
+      // Load user data from localStorage
+      const classCode = localStorage.getItem('psg_class_code');
+      const className = localStorage.getItem('psg_class_name');
+      const userType = localStorage.getItem('psg_user_type');
+      
+      setUserName(className || 'N/A');
+      // Map userType to role code for navigation
+      const roleCode = userType === 'Class Representative' ? 'CR' : userType;
+      setUserRole(roleCode || 'CR');
     }
   }, [navigate]);
 
@@ -112,13 +124,13 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Load user data from localStorage
-  // Always use 'Class Representative' for name and role
+
 
   const handleLogout = () => {
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userName');
-    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('psg_class_session');
+    localStorage.removeItem('psg_class_code');
+    localStorage.removeItem('psg_class_name');
+    localStorage.removeItem('psg_user_type');
     navigate('/login-register');
   };
 
@@ -133,22 +145,28 @@ const Dashboard = () => {
     }
   ];
 
-  const getSummaryWidgets = () => [
-    {
-      title: 'Class Strength',
-      value: studentsData.length.toString(),
-      subtitle: 'Total students in class',
-      icon: 'Users',
-      color: 'primary'
-    },
-    {
-      title: 'Total Subjects',
-      value: subjectsFaculty.length.toString(),
-      subtitle: 'Subjects for this class',
-      icon: 'BookOpen',
-      color: 'secondary'
-    }
-  ];
+  const getSummaryWidgets = () => {
+    const currentClassCode = getCurrentClassCode();
+    const classStudents = studentsData[currentClassCode] || [];
+    const classSubjects = subjectsData[currentClassCode] || [];
+    
+    return [
+      {
+        title: 'Class Strength',
+        value: classStudents.length > 0 ? classStudents.length.toString() : 'N/A',
+        subtitle: 'Total students in class',
+        icon: 'Users',
+        color: 'primary'
+      },
+      {
+        title: 'Total Subjects',
+        value: classSubjects.length > 0 ? classSubjects.length.toString() : 'N/A',
+        subtitle: 'Subjects for this class',
+        icon: 'BookOpen',
+        color: 'primary'
+      }
+    ];
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -158,13 +176,13 @@ const Dashboard = () => {
         onLogout={handleLogout}
       />
       <MainNavigation 
-        userRole="CR"
+        userRole={userRole || 'CR'}
         isCollapsed={isNavCollapsed}
         onToggleCollapse={() => setIsNavCollapsed(!isNavCollapsed)}
       />
       <QuickActionFAB userRole={userRole} />
       <main className={`pt-16 pb-20 lg:pb-8 transition-academic ${
-        isNavCollapsed ? 'lg:pl-16' : 'lg:pl-72'
+        isNavCollapsed ? 'lg:pl-25' : 'lg:pl-64'
       }`}>
         <div className="p-4 lg:p-8 max-w-7xl mx-auto">
           <BreadcrumbTrail />
