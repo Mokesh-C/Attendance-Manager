@@ -74,6 +74,11 @@ const Select = React.forwardRef(({
                 ? newValue?.filter(v => v !== option?.value)
                 : [...newValue, option?.value];
             onChange?.(updatedValue);
+            // If max 2 selected, close dropdown
+            if (updatedValue.length == 1 || updatedValue.length >= 2) {
+                setIsOpen(false);
+                onOpenChange?.(false);
+            }
         } else {
             onChange?.(option?.value);
             setIsOpen(false);
@@ -138,7 +143,7 @@ const Select = React.forwardRef(({
                     id={selectId}
                     type="button"
                     className={cn(
-                        "flex h-10 w-full items-center justify-between rounded-md border border-input bg-white text-black px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                        "flex h-10 w-full items-center justify-between rounded-md border border-border bg-white text-black px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
                         error && "border-destructive focus:ring-destructive",
                         !hasValue && "text-muted-foreground"
                     )}

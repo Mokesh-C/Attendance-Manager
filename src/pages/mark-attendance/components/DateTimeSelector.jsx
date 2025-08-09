@@ -39,7 +39,7 @@ const DateTimeSelector = ({
   return (
     <div className="bg-card rounded-lg border border-border p-4 shadow-academic">
       <div className="flex items-center mb-3">
-        <Icon name="Calendar" size={20} className="text-secondary mr-2" />
+        <Icon name="Calendar" size={20} className="text-primary mr-2" />
         <h3 className="text-lg font-heading font-semibold text-foreground">
           Date & Time
         </h3>
@@ -51,6 +51,7 @@ const DateTimeSelector = ({
             label="Attendance Date"
             value={selectedDate}
             onChange={(e) => onDateChange(e?.target?.value)}
+            className="bg-white"
             required
           />
           {selectedDate && (

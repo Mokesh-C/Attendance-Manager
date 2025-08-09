@@ -12,7 +12,6 @@ import BreadcrumbTrail from '../../components/ui/BreadcrumbTrail';
 import SubjectSelector from './components/SubjectSelector';
 import DateTimeSelector from './components/DateTimeSelector';
 import StudentAttendanceList from './components/StudentAttendanceList';
-import AttendanceConfirmation from './components/AttendanceConfirmation';
 import AttendanceActions from './components/AttendanceActions';
 
 import Icon from '../../components/AppIcon';
@@ -57,7 +56,7 @@ const MarkAttendance = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sendType, setSendType] = useState('common'); // Default to common, will be updated based on faculty mobile
-  const [reportFilter, setReportFilter] = useState('both');
+  const [reportFilter, setReportFilter] = useState('absent');
 
   // Get current class code and data
   const currentClassCode = getCurrentClassCode();
@@ -209,22 +208,60 @@ const MarkAttendance = () => {
       return hourObj ? `${hourObj.label} (${hourObj.start} - ${hourObj.end})` : `Hour ${hourValue}`;
     };
 
-    // Only show absent students list, as per requested format
+    // Group absent roll numbers by prefix and omit names
+    const groupRollNumbers = (students) => {
+      const groups = {};
+      students.forEach(s => {
+        // Extract prefix (letters and numbers before the last 3 digits)
+        const match = s?.rollNumber?.match(/^(\d{2,}[A-Z]+)-?(\d{3})$/i);
+        if (match) {
+          const prefix = match[1];
+          const suffix = match[2];
+          if (!groups[prefix]) groups[prefix] = [];
+          groups[prefix].push(suffix);
+        } else {
+          // Fallback: group by everything except last 3 digits
+          const prefix = s?.rollNumber?.slice(0, -3);
+          const suffix = s?.rollNumber?.slice(-3);
+          if (!groups[prefix]) groups[prefix] = [];
+          groups[prefix].push(suffix);
+        }
+      });
+      return Object.entries(groups)
+        .map(([prefix, nums]) => `${prefix}- ${nums.join(', ')}`)
+        .join('\n');
+    };
+
     const absentList = absentStudentsList?.length > 0
-      ? absentStudentsList?.map(s => `• ${s?.name} (${s?.rollNumber})`)?.join('\n')
+      ? groupRollNumbers(absentStudentsList)
+      : 'None';
+    
+    const presentList = presentStudentsList?.length > 0
+      ? groupRollNumbers(presentStudentsList)
       : 'None';
 
     const hourLabels = selectedHours.map(getHourLabel).join(', ');
     
-    return `🎓 ATTENDANCE REPORT\n\n` +
+    console.log(reportFilter)
+    let studentSection = '';
+    if (reportFilter === 'absent') {
+        studentSection = `❌ ABSENT STUDENTS (${absentStudentsList?.length}):\n${absentList}\n\n`;
+    } else if (reportFilter === 'present') {
+        studentSection = `✅ PRESENT STUDENTS (${presentStudentsList?.length}):\n${presentList}\n\n`;
+    } else if (reportFilter === 'both') {
+        studentSection =
+          `✅ PRESENT STUDENTS (${presentStudentsList?.length}):\n${presentList}\n\n` +
+          `❌ ABSENT STUDENTS (${absentStudentsList?.length}):\n${absentList}\n\n`;
+    }
+    
+    return `🎓 ATTENDANCE REPORT (${userName})\n\n` +
       `📖 Subject: ${subject?.subjectName} (${subject?.subjectCode})\n` +
       `📅 Date & Hour: ${formatDate(selectedDate)} & ${hourLabels}\n\n` +
       `ATTENDANCE SUMMARY:\n` +
       `✅ Present: ${presentStudentsList?.length}\n` +
       `❌ Absent: ${absentStudentsList?.length}\n` +
-      `📈 Attendance: ${((presentStudentsList?.length / currentStudents?.length) * 100)?.toFixed(1)}%\n\n` +
-      `❌ ABSENT STUDENTS (${absentStudentsList?.length}):\n${absentList}\n\n` +
-      `Time: ${new Date()?.toLocaleString('en-IN')}`;
+      `📈 Attendance: ${((presentStudentsList?.length / currentStudents?.length) * 100)?.toFixed(1)}%\n\n` + studentSection +
+      `Time: ${new Date()?.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }).replace(/am|pm/i, m => m.toUpperCase())}`;
   };
 
   // Send logic based on type
@@ -267,36 +304,9 @@ const MarkAttendance = () => {
     navigate('/login-register');
   };
 
-  // Early return for loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading attendance page...</p>
-        </div>
-      </div>
-    );
-  }
+  // ...existing code...
 
-  // Early return for error state
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center p-8 max-w-md">
-          <Icon name="AlertTriangle" size={48} className="text-destructive mx-auto mb-4" />
-          <h1 className="text-xl font-heading font-semibold text-foreground mb-2">Error Loading Page</h1>
-          <p className="text-muted-foreground mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
+  // ...existing code...
 
   return (
     <div className="min-h-screen bg-background">
@@ -312,7 +322,7 @@ const MarkAttendance = () => {
       />
       <QuickActionFAB userRole={userRole} />
       <main className={`pt-16 pb-20 lg:pb-8 transition-academic ${
-        isNavCollapsed ? 'lg:pl-25' : 'lg:pl-64'
+        isNavCollapsed ? 'md:ml-25' : 'md:ml-64'
       }`}>
         <div className="p-4 lg:p-6 max-w-7xl mx-auto">
           <BreadcrumbTrail />
@@ -328,10 +338,31 @@ const MarkAttendance = () => {
               Record student attendance for class sessions with automated report generation
             </p>
           </div>
-          
-
-
-          {noSubjectsMessage ? (
+          {/* Error State */}
+          {error && (
+            <div className="min-h-[200px] flex items-center justify-center">
+              <div className="text-center p-8 max-w-md">
+                <Icon name="AlertTriangle" size={48} className="text-destructive mx-auto mb-4" />
+                <h1 className="text-xl font-heading font-semibold text-foreground mb-2">Error Loading Page</h1>
+                <p className="text-muted-foreground mb-4">{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded"
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          )}
+          {/* Loading State */}
+          {isLoading ? (
+            <div className="min-h-[200px] flex items-center justify-center">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                <p className="text-muted-foreground">Loading attendance page...</p>
+              </div>
+            </div>
+          ) : noSubjectsMessage ? (
             <div className="bg-card rounded-lg border border-border p-8 shadow-academic text-center">
               <Icon name="BookOpen" size={48} className="text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-heading font-semibold text-foreground mb-2">
@@ -351,86 +382,74 @@ const MarkAttendance = () => {
                   onSubjectChange={setSelectedSubject}
                 />
 
-              <DateTimeSelector
-                selectedDate={selectedDate}
-                onDateChange={setSelectedDate}
-                selectedHours={selectedHours}
-                onHoursChange={setSelectedHours}
-                hours={hours}
-              />
+                <DateTimeSelector
+                  selectedDate={selectedDate}
+                  onDateChange={setSelectedDate}
+                  selectedHours={selectedHours}
+                  onHoursChange={setSelectedHours}
+                  hours={hours}
+                />
 
-              <StudentAttendanceList
-                students={currentStudents}
-                presentStudents={presentStudents}
-                onStudentToggle={handleStudentToggle}
-                onSelectAll={handleSelectAll}
-                allSelected={allSelected}
-              />
-            </div>
+                <StudentAttendanceList
+                  students={currentStudents}
+                  presentStudents={presentStudents}
+                  onStudentToggle={handleStudentToggle}
+                  onSelectAll={handleSelectAll}
+                  allSelected={allSelected}
+                />
+              </div>
 
-            {/* Right Column - Actions */}
-            <div className="space-y-6">
-              <AttendanceActions
-                sendType={sendType}
-                onSendTypeChange={setSendType}
-                onSend={handleSend}
-                disabled={!canSubmit}
-                presentCount={presentStudents?.length}
-                totalCount={currentStudents?.length}
-                reportFilter={reportFilter}
-                onReportFilterChange={handleReportFilterChange}
-                facultyMobile={selectedSubjectData?.faculty?.mobile}
-              />
+              {/* Right Column - Actions */}
+              <div className="space-y-6">
+                <AttendanceActions
+                  sendType={sendType}
+                  onSendTypeChange={setSendType}
+                  onSend={handleSend}
+                  disabled={!canSubmit}
+                  presentCount={presentStudents?.length}
+                  totalCount={currentStudents?.length}
+                  reportFilter={reportFilter}
+                  onReportFilterChange={handleReportFilterChange}
+                  facultyMobile={selectedSubjectData?.faculty?.mobile}
+                />
 
-              {/* Quick Stats */}
-              <div className="bg-card rounded-lg border border-border p-4 shadow-academic">
-                <h3 className="text-lg font-heading font-semibold text-foreground mb-3">
-                  Quick Stats
-                </h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Total Subjects:</span>
-                    <span className="font-medium text-foreground">{subjects?.length}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Selected Subject:</span>
-                    <span className="font-medium text-foreground">
-                      {selectedSubjectData ? selectedSubjectData?.subjectCode : 'None'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Date:</span>
-                    <span className="font-medium text-foreground">
-                      {new Date(selectedDate)?.toLocaleDateString('en-IN')}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Status:</span>
-                    <span className={`font-medium ${canSubmit ? 'text-success' : 'text-warning'}`}>
-                      {canSubmit ? 'Ready to Send' : 'Incomplete'}
-                    </span>
+                {/* Quick Stats */}
+                <div className="bg-card rounded-lg border border-border p-4 shadow-academic">
+                  <h3 className="text-lg font-heading font-semibold text-foreground mb-3">
+                    Quick Stats
+                  </h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Total Subjects:</span>
+                      <span className="font-medium text-foreground">{subjects?.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Selected Subject:</span>
+                      <span className="font-medium text-foreground">
+                        {selectedSubjectData ? selectedSubjectData?.subjectCode : 'None'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Date:</span>
+                      <span className="font-medium text-foreground">
+                        {new Date(selectedDate)?.toLocaleDateString('en-IN')}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Status:</span>
+                      <span className={`font-medium ${canSubmit ? 'text-success' : 'text-warning'}`}>
+                        {canSubmit ? 'Ready to Send' : 'Incomplete'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </main>
       {/* Confirmation Modal */}
-      <AttendanceConfirmation
-        isOpen={showConfirmation}
-        onClose={() => setShowConfirmation(false)}
-        onConfirm={handleConfirmSubmission}
-        loading={isSubmitting}
-        attendanceData={{
-          subject: selectedSubjectData,
-          date: selectedDate,
-          hour: selectedHours,
-          presentStudents: currentStudents?.filter(s => presentStudents?.includes(s?.rollNumber)),
-          absentStudents: currentStudents?.filter(s => !presentStudents?.includes(s?.rollNumber))
-        }}
-      />
+      {/* ...existing code... */}
     </div>
   );
 }

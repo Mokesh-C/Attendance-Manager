@@ -168,7 +168,7 @@ const MainNavigation = ({ userRole = 'CR', isCollapsed = false, onToggleCollapse
         <div className="p-4 border-t border-border">
           <div className={`flex items-center ${isCollapsed ? 'justify-center' : ''}`}>
             <div className={`flex items-center justify-center w-8 h-8 rounded-full ${
-              effectiveUserRole === 'CR' ? 'bg-secondary' : 'bg-accent'
+              effectiveUserRole === 'CR' ? 'bg-primary' : 'bg-accent'
             }`}>
               <Icon 
                 name={effectiveUserRole === 'CR' ? 'UserCheck' : 'GraduationCap'} 

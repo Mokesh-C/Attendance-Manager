@@ -10,17 +10,13 @@ const StudentCard = ({ student }) => {
           {student?.name}
         </h3>
         <p className="text-sm text-muted-foreground font-caption">
-          Roll: {student?.rollNumber}
+          Roll No: {student?.rollNumber}
         </p>
       </div>
       <div className="space-y-2">
         <div className="flex items-center text-sm">
           <Icon name="Mail" size={14} className="text-muted-foreground mr-2" />
           <span className="text-foreground truncate">{student?.email}</span>
-        </div>
-        <div className="flex items-center text-sm">
-          <Icon name="Phone" size={14} className="text-muted-foreground mr-2" />
-          <span className="text-foreground">{student?.mobile}</span>
         </div>
         <div className="flex items-center text-sm">
           <Icon name="GraduationCap" size={14} className="text-muted-foreground mr-2" />

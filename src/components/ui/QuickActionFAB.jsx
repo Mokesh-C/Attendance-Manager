@@ -20,7 +20,7 @@ const QuickActionFAB = ({ userRole = 'CR' }) => {
       label: 'Add Student',
       path: '/student-management',
       icon: 'UserPlus',
-      color: 'bg-secondary',
+    color: 'bg-primary',
       roles: ['CR', 'Faculty']
     },
     {
@@ -55,7 +55,7 @@ const QuickActionFAB = ({ userRole = 'CR' }) => {
   }
 
   return (
-    <div className="fixed bottom-20 right-4 z-50">
+  <div className="fixed bottom-20 right-4 z-50">
       {/* Expanded Actions */}
       {isExpanded && (
         <div className="mb-4 space-y-3">
@@ -92,9 +92,9 @@ const QuickActionFAB = ({ userRole = 'CR' }) => {
       {/* Main FAB Button */}
       <button
         onClick={isMarkAttendancePage ? toggleExpanded : () => handleActionClick('/mark-attendance')}
-        className={`flex items-center justify-center w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-academic-lg hover:shadow-academic-md transition-academic group ${
-          isExpanded ? 'rotate-45' : 'hover:scale-105'
-        }`}
+        className={
+          'flex items-center justify-center w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-academic-lg hover:shadow-academic-md transition-academic group hover:scale-105'
+        }
       >
         <Icon 
           name={isMarkAttendancePage ? (isExpanded ? 'X' : 'Menu') : 'CheckSquare'} 

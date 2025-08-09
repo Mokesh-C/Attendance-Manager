@@ -34,7 +34,7 @@ const StudentAttendanceList = ({
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
-            <Icon name="Users" size={20} className="text-accent mr-2" />
+            <Icon name="Users" size={20} className="text-primary mr-2" />
             <h3 className="text-lg font-heading font-semibold text-foreground">
               Student Attendance
             </h3>
@@ -73,32 +73,41 @@ const StudentAttendanceList = ({
           <div>
             {students?.map((student) => {
               const isPresent = presentStudents?.includes(student?.rollNumber);
-              return (
-                <div
-                  key={student?.rollNumber}
-                  className={`flex items-center p-2 rounded-lg border transition-academic ${
-                    isPresent
-                      ? 'bg-success/5 border-success/20' :'bg-destructive/5 border-destructive/20'
-                  }`}
-                >
-                  <Checkbox
-                    checked={isPresent}
-                    onChange={() => onStudentToggle(student?.rollNumber)}
-                    size="lg"
-                    className="mr-3"
-                  />
-                  <span className="text-sm font-medium text-foreground mr-2" style={{minWidth:120}}>{student?.name}</span>
-                  <span className="text-xs font-mono text-muted-foreground mx-2">{student?.rollNumber}</span>
-                  <span style={{flex:1}}></span>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    isPresent
-                      ? 'bg-success text-success-foreground'
-                      : 'bg-destructive text-destructive-foreground'
-                  }`}>
-                    {isPresent ? 'Present' : 'Absent'}
-                  </span>
-                </div>
-              );
+                return (
+                  <div
+                    key={student?.rollNumber}
+                    className={`flex items-center p-2 rounded-lg border transition-academic cursor-pointer select-none ${
+                      isPresent
+                        ? 'bg-success/5 border-success/20' :'bg-destructive/5 border-destructive/20'
+                    }`}
+                    onClick={() => onStudentToggle(student?.rollNumber)}
+                    tabIndex={0}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        onStudentToggle(student?.rollNumber);
+                      }
+                    }}
+                    aria-pressed={isPresent}
+                    role="button"
+                  >
+                    <Checkbox
+                      checked={isPresent}
+                      onChange={e => e.stopPropagation() || onStudentToggle(student?.rollNumber)}
+                      size="lg"
+                      className="mr-3"
+                    />
+                    <span className="text-sm font-medium text-foreground mr-2" style={{minWidth:120}}>{student?.name}</span>
+                    <span className="text-xs font-mono text-muted-foreground mx-2">{student?.rollNumber}</span>
+                    <span style={{flex:1}}></span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      isPresent
+                        ? 'bg-success text-success-foreground'
+                        : 'bg-destructive text-destructive-foreground'
+                    }`}>
+                      {isPresent ? 'Present' : 'Absent'}
+                    </span>
+                  </div>
+                );
             })}
           </div>
         </div>

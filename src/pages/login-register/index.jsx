@@ -16,7 +16,7 @@ const LoginPage = () => {
     if (session === 'active') {
       navigate('/dashboard');
     }
-    document.title = 'Class Code Login - PSG Attendance Manager';
+  document.title = 'Class Code Login - PSG RepBuddy';
   }, [navigate]);
 
   const handleSubmit = (e) => {
@@ -37,7 +37,7 @@ const LoginPage = () => {
 
   return (
     <MobileOptimizedLayout>
-      <div className="space-y-8 flex flex-col items-center justify-center min-h-screen">
+      <div className="space-y-8 flex flex-col items-center justify-center ">
         <InstitutionalHeader />
         <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto space-y-6">
           <h2 className="text-xl font-heading font-semibold text-foreground mb-4 text-center">

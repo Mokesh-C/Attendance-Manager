@@ -8,7 +8,7 @@ import StudentTable from './components/StudentTable';
 import SearchAndFilter from './components/SearchAndFilter';
 import Icon from '../../components/AppIcon';
 import studentsData from '../../data/students.json';
-import { getCurrentClassCode, getCurrentClassName, getCurrentUserType, getSafeData } from '../../utils/classUtils';
+import { getCurrentClassCode, getCurrentClassName } from '../../utils/classUtils';
 
 const StudentManagement = () => {
   const [students, setStudents] = useState([]);
@@ -78,15 +78,14 @@ const StudentManagement = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationHeader userRole={userRole} userName={userName} />
-      {!isMobile && (
-        <MainNavigation 
-          userRole={userRole} 
-          isCollapsed={isNavCollapsed}
-          onToggleCollapse={() => setIsNavCollapsed(!isNavCollapsed)}
-        />
-      )}
-      <main className={`pt-16 pb-20 lg:pb-8 ${!isMobile ? (isNavCollapsed ? 'lg:pl-25' : 'lg:pl-64') : ''}`}>
-        <div className="p-4 lg:p-6">
+      <MainNavigation 
+        userRole={userRole} 
+        isCollapsed={isNavCollapsed}
+        onToggleCollapse={() => setIsNavCollapsed(!isNavCollapsed)}
+      />
+      <QuickActionFAB userRole={userRole} />
+      <main className={`pt-16 pb-20 lg:pb-8 transition-academic ${isNavCollapsed ? 'md:ml-25' : 'md:ml-64'}`}>
+        <div className="p-4 lg:p-6 max-w-7xl mx-auto">
           <BreadcrumbTrail />
           <div className="mb-6">
             <h1 className="text-2xl lg:text-3xl font-heading font-bold text-foreground mb-2">Student Management</h1>
@@ -131,16 +130,11 @@ const StudentManagement = () => {
             </div>
           ) : (
             <StudentTable
-              students={filteredStudents.map(student => ({
-                ...student,
-                mobile: student.mobile || 'N/A',
-              }))}
+              students={filteredStudents}
             />
           )}
         </div>
       </main>
-
-      <QuickActionFAB userRole="CR" />
     </div>
   );
 };

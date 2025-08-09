@@ -12,7 +12,6 @@ const SubjectTable = ({ subjects }) => {
               <th className="text-left p-4 font-heading font-semibold text-foreground">Code</th>
               <th className="text-left p-4 font-heading font-semibold text-foreground">Faculty Name</th>
               <th className="text-left p-4 font-heading font-semibold text-foreground">Faculty Email</th>
-              <th className="text-left p-4 font-heading font-semibold text-foreground">Faculty Mobile</th>
             </tr>
           </thead>
           <tbody>
@@ -22,7 +21,6 @@ const SubjectTable = ({ subjects }) => {
                 <td className="p-4">{subject?.code}</td>
                 <td className="p-4">{subject?.faculty?.name}</td>
                 <td className="p-4">{subject?.faculty?.email}</td>
-                <td className="p-4">{`+91 ${subject?.faculty?.mobile || 'N/A'}`}</td>
               </tr>
             ))}
           </tbody>

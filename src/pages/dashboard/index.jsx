@@ -9,8 +9,6 @@ import BreadcrumbTrail from '../../components/ui/BreadcrumbTrail';
 import WelcomeHeader from './components/WelcomeHeader';
 import QuickActionCard from './components/QuickActionCard';
 import SummaryWidget from './components/SummaryWidget';
-import ActivityFeed from './components/ActivityFeed';
-import UpcomingSchedule from './components/UpcomingSchedule';
 import { getCurrentClassCode } from '../../utils/classUtils';
 
 const Dashboard = () => {
@@ -39,74 +37,6 @@ const Dashboard = () => {
     }
   }, [navigate]);
 
-  // Mock data for dashboard
-  const mockActivities = [
-    {
-      id: 1,
-      type: 'attendance',
-      title: 'Attendance Marked',
-      description: 'Data Structures - 45 students present out of 48',
-      timestamp: new Date(Date.now() - 300000),
-      metadata: 'Hour 3'
-    },
-    {
-      id: 2,
-      type: 'student',
-      title: 'New Student Added',
-      description: 'Priya Sharma added to Computer Networks subject',
-      timestamp: new Date(Date.now() - 1800000),
-      metadata: 'Roll: 21CS089'
-    },
-    {
-      id: 3,
-      type: 'subject',
-      title: 'Subject Updated',
-      description: 'Machine Learning faculty changed to Dr. Venkatesh',
-      timestamp: new Date(Date.now() - 3600000),
-      metadata: 'CS6701'
-    },
-    {
-      id: 4,
-      type: 'attendance',
-      title: 'Attendance Report Shared',
-      description: 'Operating Systems attendance sent via WhatsApp',
-      timestamp: new Date(Date.now() - 7200000),
-      metadata: '42 recipients'
-    }
-  ];
-
-  const mockSchedule = [
-    {
-      id: 1,
-      subject: 'Data Structures',
-      faculty: 'Dr. Ramanathan',
-      room: 'CSE-301',
-      startTime: '09:00',
-      endTime: '10:00',
-      studentCount: 48,
-      status: 'upcoming'
-    },
-    {
-      id: 2,
-      subject: 'Computer Networks',
-      faculty: 'Prof. Lakshmi',
-      room: 'CSE-205',
-      startTime: '11:00',
-      endTime: '12:00',
-      studentCount: 45,
-      status: 'upcoming'
-    },
-    {
-      id: 3,
-      subject: 'Machine Learning',
-      faculty: 'Dr. Venkatesh',
-      room: 'CSE-401',
-      startTime: '14:00',
-      endTime: '15:00',
-      studentCount: 42,
-      status: 'upcoming'
-    }
-  ];
 
   // Update current time
   useEffect(() => {
@@ -134,16 +64,6 @@ const Dashboard = () => {
     navigate('/login-register');
   };
 
-  const getQuickActions = () => [
-    {
-      title: 'Mark Attendance',
-      description: 'Record daily attendance for students in your class',
-      icon: 'CheckSquare',
-      path: '/mark-attendance',
-      color: 'primary',
-      stats: null
-    }
-  ];
 
   const getSummaryWidgets = () => {
     const currentClassCode = getCurrentClassCode();
@@ -194,7 +114,7 @@ const Dashboard = () => {
           />
 
           {/* Summary Widgets */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+          <div className="flex flex-row gap-6 mb-8 sm:grid sm:grid-cols-2">
             {getSummaryWidgets()?.map((widget, index) => (
               <SummaryWidget
                 key={index}

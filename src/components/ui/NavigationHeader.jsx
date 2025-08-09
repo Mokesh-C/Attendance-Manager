@@ -34,18 +34,15 @@ const NavigationHeader = ({ userRole = getCurrentUserType(), userName = getCurre
         {/* Logo Section */}
         <div className="flex items-center space-x-3">
           <div className="flex items-center justify-center w-10 h-10 bg-primary rounded-lg">
-            <svg
-              viewBox="0 0 24 24"
-              className="w-6 h-6 text-primary-foreground"
-              fill="currentColor"
-            >
-              <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z" />
-              <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2" fill="none" />
-            </svg>
+            <img
+              src="/assets/images/PSGCTlogo.png"
+              alt="PSGCT Logo"
+              className="w-8 h-8 object-contain"
+            />
           </div>
           <div className="hidden sm:block">
             <h1 className="text-lg font-heading font-semibold text-foreground">
-              PSG Attendance Manager
+              PSG RepBuddy
             </h1>
             <p className="text-xs font-caption text-muted-foreground">
               PSG College of Technology
@@ -53,7 +50,7 @@ const NavigationHeader = ({ userRole = getCurrentUserType(), userName = getCurre
           </div>
           <div className="sm:hidden">
             <h1 className="text-base font-heading font-semibold text-foreground">
-              PSG AM
+              PSG RepBuddy
             </h1>
           </div>
         </div>
@@ -66,7 +63,7 @@ const NavigationHeader = ({ userRole = getCurrentUserType(), userName = getCurre
             onClick={handleProfileToggle}
             className="flex items-center space-x-2 px-3 hover:bg-blue-500/10 transition-colors"
           >
-            <div className="flex items-center justify-center w-8 h-8 bg-secondary rounded-full">
+            <div className="flex items-center justify-center w-8 h-8 bg-primary rounded-full">
               <Icon name="User" size={16} className="text-secondary-foreground" />
             </div>
             <div className="hidden md:block text-left">

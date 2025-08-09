@@ -14,7 +14,6 @@ const StudentTable = ({
               <th className="text-left p-4 font-heading font-semibold text-foreground">Name</th>
               <th className="text-left p-4 font-heading font-semibold text-foreground">Roll Number</th>
               <th className="text-left p-4 font-heading font-semibold text-foreground">Email</th>
-              <th className="text-left p-4 font-heading font-semibold text-foreground">Mobile</th>
             </tr>
           </thead>
           <tbody>
@@ -31,9 +30,6 @@ const StudentTable = ({
                 </td>
                 <td className="p-4">
                   <span className="text-foreground text-sm">{student?.email}</span>
-                </td>
-                <td className="p-4">
-                  <span className="text-foreground text-sm">{student?.mobile}</span>
                 </td>
               </tr>
             ))}

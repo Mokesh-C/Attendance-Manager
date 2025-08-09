@@ -10,7 +10,7 @@ const SearchAndFilter = ({
 }) => {
 
   return (
-    <div className="bg-card border-2 border-border rounded-lg p-4 mb-6 shadow-academic hover:shadow-academic-md transition-all duration-200">
+  <div className="bg-card border border-border rounded-lg p-4 mb-6 shadow-academic hover:shadow-academic-md transition-all duration-200">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0 lg:space-x-4">
         <div className="flex-1 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
           <div className="flex-1">
@@ -25,7 +25,7 @@ const SearchAndFilter = ({
                 placeholder="Search students by name, roll number, email..."
                 value={searchQuery}
                 onChange={(e) => onSearchChange(e?.target?.value)}
-                className="pl-10 border-2 border-border focus:border-primary shadow-sm transition-all duration-200 focus-within:border-primary"
+                className="pl-10 shadow-sm transition-all duration-200"
               />
             </div>
           </div>

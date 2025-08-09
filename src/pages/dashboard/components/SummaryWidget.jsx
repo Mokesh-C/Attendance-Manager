@@ -23,10 +23,13 @@ const SummaryWidget = ({ title, value, subtitle, icon, trend, color = 'primary' 
 
   return (
     <div className="bg-card border border-border rounded-lg p-6 shadow-academic">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`flex items-center justify-center w-12 h-12 rounded-lg ${colorClasses?.[color]}`}>
+      <div className="flex items-center mb-4 gap-3">
+        <div className={`flex items-center justify-center w-12 h-12 rounded-lg ${colorClasses?.[color]}`}> 
           <Icon name={icon} size={24} />
         </div>
+        <h3 className="text-2xl font-heading font-bold text-foreground">
+          {value}
+        </h3>
         {trend && (
           <div className={`flex items-center space-x-1 ${getTrendColor()}`}>
             <Icon name={getTrendIcon()} size={16} />
@@ -35,9 +38,6 @@ const SummaryWidget = ({ title, value, subtitle, icon, trend, color = 'primary' 
         )}
       </div>
       <div className="space-y-2">
-        <h3 className="text-2xl font-heading font-bold text-foreground">
-          {value}
-        </h3>
         <p className="text-sm font-medium text-foreground">
           {title}
         </p>

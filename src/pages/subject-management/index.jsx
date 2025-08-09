@@ -3,13 +3,8 @@ import NavigationHeader from '../../components/ui/NavigationHeader';
 import MainNavigation from '../../components/ui/MainNavigation';
 import QuickActionFAB from '../../components/ui/QuickActionFAB';
 import BreadcrumbTrail from '../../components/ui/BreadcrumbTrail';
-import Icon from '../../components/AppIcon';
-import Button from '../../components/ui/Button';
-import SubjectCard from './components/SubjectCard';
 import SubjectTable from './components/SubjectTable';
-import SubjectModal from './components/SubjectModal';
-import SubjectFilters from './components/SubjectFilters';
-import SubjectStats from './components/SubjectStats';
+import facultyData from '../../data/faculty.json';
 import subjectsData from '../../data/subjects.json';
 import { getCurrentClassCode } from '../../utils/classUtils';
 
@@ -44,12 +39,15 @@ const SubjectManagement = () => {
   
   useEffect(() => {
     const currentClassCode = getCurrentClassCode();
-    setSubjects(subjectsData[currentClassCode]?.map((s, idx) => ({
-      id: idx + 1,
-      name: s.subjectName,
-      code: s.subjectCode,
-      faculty: { email: s.facultyEmail, name: 'N/A' }
-    })) || []);
+    setSubjects(subjectsData[currentClassCode]?.map((s, idx) => {
+      const faculty = facultyData.faculty.find(f => f.email === s.facultyEmail);
+      return {
+        id: idx + 1,
+        name: s.subjectName,
+        code: s.subjectCode,
+        faculty: faculty || { email: s.facultyEmail, name: 'N/A', mobile: '', department: '', designation: '' }
+      };
+    }) || []);
   }, []);
 
   const facultyList = [
@@ -174,11 +172,10 @@ const SubjectManagement = () => {
   return (
     <div className="min-h-screen bg-background">
       <NavigationHeader userRole={userRole} userName={userName} />
-      {!isMobile && (
-        <MainNavigation userRole={userRole} isCollapsed={isNavCollapsed} onToggleCollapse={() => setIsNavCollapsed(!isNavCollapsed)} />
-      )}
-      <main className={`pt-16 pb-20 lg:pb-8 ${!isMobile ? (isNavCollapsed ? 'lg:pl-25' : 'lg:pl-64') : ''}`}>
-        <div className="p-4 lg:p-6">
+      <MainNavigation userRole={userRole} isCollapsed={isNavCollapsed} onToggleCollapse={() => setIsNavCollapsed(!isNavCollapsed)} />
+      <QuickActionFAB userRole={userRole} />
+      <main className={`pt-16 pb-20 lg:pb-8 transition-academic ${isNavCollapsed ? 'md:ml-25' : 'md:ml-64'}`}>
+        <div className="p-4 lg:p-6 max-w-7xl mx-auto">
           <BreadcrumbTrail />
           <div className="mb-6">
             <h1 className="text-2xl lg:text-3xl font-heading font-bold text-foreground mb-2">Subject Management</h1>
@@ -191,7 +188,6 @@ const SubjectManagement = () => {
           />
         </div>
       </main>
-      <QuickActionFAB userRole={userRole} />
     </div>
   );
 };

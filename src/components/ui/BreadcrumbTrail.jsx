@@ -11,7 +11,6 @@ const BreadcrumbTrail = ({ customBreadcrumbs = null }) => {
     '/student-management': { label: 'Student Management', icon: 'Users' },
     '/subject-management': { label: 'Subject Management', icon: 'BookOpen' },
     '/mark-attendance': { label: 'Mark Attendance', icon: 'CheckSquare' },
-    '/faculty-management': { label: 'Faculty Management', icon: 'GraduationCap' },
     '/login-register': { label: 'Authentication', icon: 'LogIn' }
   };
 
